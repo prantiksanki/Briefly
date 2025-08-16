@@ -7,39 +7,35 @@ export default function MainComponent() {
   const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const [summary, setSummary] = useState("");
 
   // Replace with your actual values
   const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
   const GROQ_API_URL = import.meta.env.VITE_GROQ_API_URL;
 
-
- const transcribeSendToServer = async (textRes) => {
-  try {
-    if (!textRes || textRes.trim() === "") {
-      throw new Error("Empty transcription result. Nothing to send.");
-    }
-
-    const response = await axios.post(
-      "http://localhost:80/transcribe",
-      { audio: textRes },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+  const transcribeSendToServer = async (textRes) => {
+    try {
+      if (!textRes || textRes.trim() === "") {
+        throw new Error("Empty transcription result. Nothing to send.");
       }
-    );
-    console.log("Backend response:", response.data); // ADDED
-    return response.data; // return backend response (e.g. saved transcript, analysis, etc.)
-  } catch (error) {
-    console.error("❌ Error sending transcription to server:", error);
-    // throw error;
-  }
-};
 
+      const response = await axios.post(
+        "http://localhost:80/transcribe",
+        { audio: textRes },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-
-
-
+      console.log("Backend response:", response.data);
+      setSummary(response.data); // ✅ save Gemini's summary
+      return response.data;
+    } catch (error) {
+      console.error("❌ Error sending transcription to server:", error);
+    }
+  };
 
   const startRecording = async () => {
     try {
@@ -101,22 +97,15 @@ export default function MainComponent() {
       const transcription = response.data.text || response.data.transcription;
       console.log("Transcription received:", transcription); // ADDED
       if (transcription) {
-         transcribeSendToServer(transcription);
-        alert("✅ Transcription:\n" + transcription);
-
-      } 
-      else 
-        {
+        transcribeSendToServer(transcription);
+        // alert("✅ Transcription:\n" + transcription);
+      } else {
         throw new Error("No transcription returned");
       }
-    } 
-    catch (error) 
-    {
+    } catch (error) {
       console.error("Error processing audio:", error);
       alert("❌ Oops! Couldn't transcribe the audio!");
-    } 
-    finally 
-    {
+    } finally {
       setIsLoading(false);
       setAudioBlob(null);
     }
@@ -162,16 +151,21 @@ export default function MainComponent() {
         )}
       </div>
 
+      {/* Response Section */}
+      {summary && (
+        <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-800 overflow-y-auto max-h-32">
+          <h3 className="font-semibold mb-1">📝 Meeting Summary:</h3>
+          <p>{summary}</p>
+        </div>
+      )}
+
       {/* Loader */}
-      {isLoading && 
-      (
+      {isLoading && (
         <div className="flex justify-center items-center mt-4">
           <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <span className="ml-2 text-sm text-gray-600">Processing...</span>
         </div>
       )}
-
-
     </div>
   );
 }
