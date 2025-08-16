@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 
 export default function MainComponent() {
+  const [showTranscriber, setShowTranscriber] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
@@ -30,7 +31,7 @@ export default function MainComponent() {
       );
 
       console.log("Backend response:", response.data);
-      setSummary(response.data); // ✅ save Gemini's summary
+      setSummary(response.data);
       return response.data;
     } catch (error) {
       console.error("❌ Error sending transcription to server:", error);
@@ -95,10 +96,9 @@ export default function MainComponent() {
       });
 
       const transcription = response.data.text || response.data.transcription;
-      console.log("Transcription received:", transcription); // ADDED
+      console.log("Transcription received:", transcription);
       if (transcription) {
         transcribeSendToServer(transcription);
-        // alert("✅ Transcription:\n" + transcription);
       } else {
         throw new Error("No transcription returned");
       }
@@ -111,60 +111,68 @@ export default function MainComponent() {
     }
   };
 
+  const renderTranscriber = () => {
+    return (
+      <div className="w-80 h-72 bg-white shadow-xl rounded-2xl p-5 flex flex-col justify-between font-sans">
+        <h2 className="text-lg font-bold text-gray-800 text-center">
+          🎙 Audio Transcriber
+        </h2>
+        <div className="flex flex-col items-center mt-3">
+          {isRecording && (
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mb-2"></div>
+          )}
+          <p className="text-sm text-gray-600">
+            {isRecording
+              ? "Recording... Tap stop to finish."
+              : "Press start to record your audio."}
+          </p>
+        </div>
+        <div className="flex justify-center gap-3 mt-4">
+          {!isRecording ? (
+            <button
+              onClick={startRecording}
+              className="px-5 py-2 bg-green-500 hover:bg-green-600 active:scale-95 transition text-white rounded-lg shadow-md"
+              disabled={isLoading}
+            >
+              Start
+            </button>
+          ) : (
+            <button
+              onClick={stopRecording}
+              className="px-5 py-2 bg-red-500 hover:bg-red-600 active:scale-95 transition text-white rounded-lg shadow-md"
+              disabled={isLoading}
+            >
+              Stop
+            </button>
+          )}
+        </div>
+        {summary && (
+          <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-800 overflow-y-auto max-h-32">
+            <h3 className="font-semibold mb-1">📝 Meeting Summary:</h3>
+            <p>{summary}</p>
+          </div>
+        )}
+        {isLoading && (
+          <div className="flex justify-center items-center mt-4">
+            <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="ml-2 text-sm text-gray-600">Processing...</span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="w-80 h-72 bg-white shadow-xl rounded-2xl p-5 flex flex-col justify-between font-sans">
-      {/* Header */}
-      <h2 className="text-lg font-bold text-gray-800 text-center">
-        🎙 Audio Transcriber
-      </h2>
-
-      {/* Recording Indicator */}
-      <div className="flex flex-col items-center mt-3">
-        {isRecording && (
-          <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mb-2"></div>
-        )}
-        <p className="text-sm text-gray-600">
-          {isRecording
-            ? "Recording... Tap stop to finish."
-            : "Press start to record your audio."}
-        </p>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-center gap-3 mt-4">
-        {!isRecording ? (
-          <button
-            onClick={startRecording}
-            className="px-5 py-2 bg-green-500 hover:bg-green-600 active:scale-95 transition text-white rounded-lg shadow-md"
-            disabled={isLoading}
-          >
-            Start
-          </button>
-        ) : (
-          <button
-            onClick={stopRecording}
-            className="px-5 py-2 bg-red-500 hover:bg-red-600 active:scale-95 transition text-white rounded-lg shadow-md"
-            disabled={isLoading}
-          >
-            Stop
-          </button>
-        )}
-      </div>
-
-      {/* Response Section */}
-      {summary && (
-        <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-800 overflow-y-auto max-h-32">
-          <h3 className="font-semibold mb-1">📝 Meeting Summary:</h3>
-          <p>{summary}</p>
-        </div>
-      )}
-
-      {/* Loader */}
-      {isLoading && (
-        <div className="flex justify-center items-center mt-4">
-          <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <span className="ml-2 text-sm text-gray-600">Processing...</span>
-        </div>
+    <div className="flex justify-center items-center h-screen">
+      {!showTranscriber ? (
+        <button
+          onClick={() => setShowTranscriber(true)}
+          className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition"
+        >
+          Open Audio Transcriber
+        </button>
+      ) : (
+        renderTranscriber()
       )}
     </div>
   );
