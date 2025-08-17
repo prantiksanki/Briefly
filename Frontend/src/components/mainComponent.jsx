@@ -59,6 +59,7 @@ export default function MainComponent() {
         stream.getTracks().forEach((track) => track.stop());
       };
 
+
       mediaRecorderRef.current.start();
       setIsRecording(true);
     } catch (error) {
@@ -177,3 +178,8 @@ export default function MainComponent() {
     </div>
   );
 }
+
+
+
+
+
