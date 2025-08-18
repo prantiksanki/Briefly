@@ -17,22 +17,17 @@ export default defineConfig({
       host: 'localhost',
       clientPort: 5173,
       timeout: 120000,
-    },
-    cors: {
-      origin: ['chrome-extension://*'],
-      methods: ['GET', 'POST', 'OPTIONS'],
-      credentials: true,
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-      'Access-Control-Allow-Credentials': 'true',
+      overlay: false,
+      path: '@crx/client-worker'
     },
     watch: {
       usePolling: true,
       interval: 1000,
     },
-  },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+    }
+  }
 });

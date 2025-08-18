@@ -2,9 +2,10 @@
   "manifest_version": 3,
   "name": "Briefly",
   "version": "1.0.0",
-  "description": "Chrome extension providing AI-driven hints on LeetCode problems. Get step-by-step help to boost problem-solving skills effectively.",
+  "description": "Chrome extension for summarizing meetings in real-time. Convert spoken discussions into concise, structured summaries with key points and action items.",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "action": {
     "default_popup": "index.html"
@@ -12,7 +13,7 @@
   "content_scripts": [
     {
       "js": ["src/content.jsx"],
-      "matches": ["https://leetcode.com/problems/*"],
+      "matches": ["*://*.github.com/*"],
       "run_at": "document_start"
     }
   ],
@@ -29,11 +30,12 @@
     ],
     "matches": [
       "http://localhost:5173/*",
-      "https://leetcode.com/*"
+      "*://*.github.com/*"
     ]
   }],
   "host_permissions": [
-    "http://localhost:5173/*"
+    "http://localhost:5173/*",
+    "*://*.github.com/*"
   ],
   "background": {
     "service_worker": "src/background.js",

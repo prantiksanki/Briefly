@@ -114,10 +114,13 @@ export default function MainComponent() {
 
   const renderTranscriber = () => {
     return (
-      <div className="w-80 h-72 bg-white shadow-xl rounded-2xl p-5 flex flex-col justify-between font-sans">
-        <h2 className="text-lg font-bold text-gray-800 text-center">
-          🎙 Audio Transcriber
+      <div className="w-full h-full bg-white rounded-lg p-5 flex flex-col justify-between font-sans">
+        {/* Header */}
+        <h2 className="text-xl font-bold text-gray-800 text-center mb-4">
+          🎙 Meeting Summarizer
         </h2>
+
+        {/* Content */}
         <div className="flex flex-col items-center mt-3">
           {isRecording && (
             <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mb-2"></div>
@@ -147,12 +150,14 @@ export default function MainComponent() {
             </button>
           )}
         </div>
+
         {summary && (
           <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-800 overflow-y-auto max-h-32">
             <h3 className="font-semibold mb-1">📝 Meeting Summary:</h3>
             <p>{summary}</p>
           </div>
         )}
+
         {isLoading && (
           <div className="flex justify-center items-center mt-4">
             <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>

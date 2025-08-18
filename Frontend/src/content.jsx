@@ -1,30 +1,30 @@
 import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
 import MainComponent from './components/mainComponent.jsx';
-import './index.css'; // Import the CSS file
+import './index.css';
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("DOM fully loaded and parsed");
+  // Create a container that takes up more space
+  const container = document.createElement('div');
+  container.id = 'briefly-extension-root';
+  container.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 400px;
+    min-height: 300px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  `;
+  
+  document.body.appendChild(container);
 
-  // Find the element where you want to insert your component
-  const targetElement = document.querySelector('#__next'); // Or any other suitable selector
-
-  if (targetElement) {
-    const root = document.createElement("div");
-    root.id = "briefly-root---------------------------";
-    targetElement.appendChild(root);
-
-    try {
-      const reactRoot = createRoot(root); // Create the root
-      reactRoot.render( // Then render
-        <StrictMode>
-          <MainComponent />
-        </StrictMode>
-      );
-    } catch (error) {
-      console.error("React rendering error:", error);
-    }
-  } else {
-    console.error("Target element not found on LeetCode!");
-  }
+  const root = createRoot(container);
+  root.render(
+    <StrictMode>
+      <MainComponent />
+    </StrictMode>
+  );
 });
