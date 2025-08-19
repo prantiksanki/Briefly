@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Briefly",
+  "version": "1.0.0",
+  "description": "A Chrome extension for summarizing meetings.",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Briefly"
+  },
+  "permissions": ["scripting", "activeTab"]
+}
