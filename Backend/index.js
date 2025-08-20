@@ -78,6 +78,16 @@ app.post("/transcribe", async (req, res) => {
   }
 });
 
+
+
+app.get("/notion", (req,res)=>
+{
+  res.send("Notion integration is not yet implemented.");
+})
+
+
+
+
 app.listen(PORT, (req, res) => {
   console.log(`Server is running on port ${PORT}`);
 });
